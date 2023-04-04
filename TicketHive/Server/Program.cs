@@ -23,39 +23,42 @@ builder.Services.AddDefaultIdentity<ApplicationUser>()
 	.AddRoles<IdentityRole>()
 	.AddEntityFrameworkStores<ApplicationDbContext>();
 
-using (var serviceProvider = builder.Services.BuildServiceProvider())
-{
-	var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
-	var signInManager = serviceProvider.GetRequiredService<SignInManager<ApplicationUser>>();
-	var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+// Kör Update Database i Package Manager Console för båda Context ( -Context ApplicationDbCOntext, -Context EventsDbContext 
+// innan detta using block kommenteras ut.
 
-	context.Database.Migrate();
+//using (var serviceProvider = builder.Services.BuildServiceProvider())
+//{
+//	var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
+//	var signInManager = serviceProvider.GetRequiredService<SignInManager<ApplicationUser>>();
+//	var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-	// creates admin user 
-	ApplicationUser? adminUser = signInManager.UserManager.FindByNameAsync("admin").GetAwaiter().GetResult();
-	if (adminUser == null)
-	{
-		adminUser = new() { UserName = "admin", Country = "Sweden" };
-		signInManager.UserManager.CreateAsync(adminUser, "Password1234!").GetAwaiter().GetResult();
-	}
+//	context.Database.Migrate();
 
-	// creates admin role
-	IdentityRole? adminRole = roleManager.FindByNameAsync("Admin").GetAwaiter().GetResult();
-	if (adminRole == null)
-	{
-		adminRole = new() { Name = "Admin" };
-		roleManager.CreateAsync(adminRole).GetAwaiter().GetResult();
-	}
-	signInManager.UserManager.AddToRoleAsync(adminUser, "Admin").GetAwaiter().GetResult();
+//	// creates admin user 
+//	ApplicationUser? adminUser = signInManager.UserManager.FindByNameAsync("admin").GetAwaiter().GetResult();
+//	if (adminUser == null)
+//	{
+//		adminUser = new() { UserName = "admin", Country = "Sweden" };
+//		signInManager.UserManager.CreateAsync(adminUser, "Password1234!").GetAwaiter().GetResult();
+//	}
 
-	// creates normal user
-	ApplicationUser? appUser = signInManager.UserManager.FindByNameAsync("user").GetAwaiter().GetResult();
-	if (appUser == null)
-	{
-		appUser = new() { UserName = "user", Country = "Sweden" };
-		signInManager.UserManager.CreateAsync(appUser, "Password1234!").GetAwaiter().GetResult();
-	}
-}
+//	// creates admin role
+//	IdentityRole? adminRole = roleManager.FindByNameAsync("Admin").GetAwaiter().GetResult();
+//	if (adminRole == null)
+//	{
+//		adminRole = new() { Name = "Admin" };
+//		roleManager.CreateAsync(adminRole).GetAwaiter().GetResult();
+//	}
+//	signInManager.UserManager.AddToRoleAsync(adminUser, "Admin").GetAwaiter().GetResult();
+
+//	// creates normal user
+//	ApplicationUser? appUser = signInManager.UserManager.FindByNameAsync("user").GetAwaiter().GetResult();
+//	if (appUser == null)
+//	{
+//		appUser = new() { UserName = "user", Country = "Sweden" };
+//		signInManager.UserManager.CreateAsync(appUser, "Password1234!").GetAwaiter().GetResult();
+//	}
+//}
 
 builder.Services.AddIdentityServer()
 	.AddApiAuthorization<ApplicationUser, ApplicationDbContext>(options =>
