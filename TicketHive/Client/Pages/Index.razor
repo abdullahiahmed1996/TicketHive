@@ -34,13 +34,12 @@
 
 @code{
     private List<EventModel>? Events;
+    public List<string> Claims { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await authStateProvider.GetAuthenticationStateAsync();
-
         var user = authState.User;
-
         if (user.Identity!.IsAuthenticated)
         {
             Events = await service.GetEventsAsync();
