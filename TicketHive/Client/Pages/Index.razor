@@ -12,23 +12,30 @@
             <h1>Welcome to Ticket Hive</h1>
             <img src="/images/logos/black only logo.png" style="width:100px; height:100px;"/>
         </div>
-        <p>wqaert yui opnv jalkeb gjlkrew qaertyu iopnvja lkebgjl krewqaert yuiopnvj alkebgjl krewqaert yuiopnvj alke bgjlkrew qaertyuio pnvjalk ebgjlkrewqa ertyui opnvjalke bgjlkrewqae rtyuiopn vjalkebgjlkrewqaert yuiopnvjalkebgj lkrewqaertyuio pnvjalkebgjlkrewq aertyuiopnvjalke bgjlkrewqae rtyuiopnvj alkebgjlkrewqa ertyuiopnvjalkebgj lkrewqaertyuiopnvj alkebgjlkrewqaertyu iopnvjalkebgjlkrewqae rtyuiopnvjalkebgjlkr ewqaertyuiopnvjalkebgjlk rewqaertyuiopnvjalkebg jlkrewqaertyuiopnvja lkebgjlkrewqaertyuiopnvj alkebgjlkrewqaertyuiop nvjalkebgjlkre</p>
+        <p>
+            wqaert yui opnv jalkeb gjlkrew qaertyu iopnvja lkebgjl krewqaert yuiopnvj alkebgjl krewqaert yuiopnvj alke bgjlkrew qaertyuio 
+            pnvjalk ebgjlkrewqa ertyui opnvjalke bgjlkrewqae rtyuiopn vjalkebgjlkrewqaert yuiopnvjalkebgj lkrewqaertyuio pnvjalkebgjlkrewq 
+            aertyuiopnvjalke bgjlkrewqae rtyuiopnvj alkebgjlkrewqa ertyuiopnvjalkebgj lkrewqaertyuiopnvj alkebgjlkrewqaertyu iopnvjalkebgj
+            lkrewqae rtyuiopnvjalkebgjlkr ewqaertyuiopnvjalkebgjlk rewqaertyuiopnvjalkebg jlkrewqaertyuiopnvja lkebgjlkrewqaertyuiopnvj 
+            alkebgjlkrewqaertyuiop nvjalkebgjlkre. 
+            To be able to book you have to <a href="authentication/login">Log in</a> or <a href="authentication/register">Register</a>
+        </p>
      </div>
 </div>
 
 
-@if (Events != null)
+@*@if (Events != null)
 {
     @foreach(var eventModel in Events)
     {
         <h1>@eventModel.Name</h1>
-@*        <picture>
+        <picture>
             <source srcSet="@eventModel.ImageUrl" type="image/avif" />
             <img decoding="async" loading="lazy"/>
-        </picture>*@
+        </picture>
         <img src="@eventModel.ImageUrl" />
     }
-}
+}*@
 
 
 <div class="card" style="width: 1000px;">
