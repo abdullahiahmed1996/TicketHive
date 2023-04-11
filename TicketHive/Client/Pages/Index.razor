@@ -1,63 +1,30 @@
-﻿@page "/"
-@using TicketHive.Client.Services;
-@using TicketHive.Shared.Models;
-@inject IAppService service;
-@inject AuthenticationStateProvider authStateProvider;
+@page "/"
 
-<PageTitle>Index</PageTitle>
-
-<div class="d-flex flex-row align-items-center justify-content-center" style="height:75vh;">
-    <div class="d-flex flex-column border border-2 border-dark h-75 w-75 p-5 align-items-center justify-content-center" style="border-radius:20px;overflow:hidden;">
-        <div class="d-flex flex-row align-items-center p-2">
-            <h1>Welcome to Ticket Hive</h1>
-            <img src="/images/logos/black only logo.png" style="width:100px; height:100px;"/>
+<div class="row justify-content-center g-0 mt-5">
+    <div class="card border-dark col-6">
+        <div class="card-header text-center">
+            <h2 style="display: inline-block;">
+                Welcome to Ticket Hive
+            </h2>
+            <img src="images/logos/black only logo.png" style="max-width: 80px; display: inline-block;" alt="">
         </div>
-        <p>
-            wqaert yui opnv jalkeb gjlkrew qaertyu iopnvja lkebgjl krewqaert yuiopnvj alkebgjl krewqaert yuiopnvj alke bgjlkrew qaertyuio 
-            pnvjalk ebgjlkrewqa ertyui opnvjalke bgjlkrewqae rtyuiopn vjalkebgjlkrewqaert yuiopnvjalkebgj lkrewqaertyuio pnvjalkebgjlkrewq 
-            aertyuiopnvjalke bgjlkrewqae rtyuiopnvj alkebgjlkrewqa ertyuiopnvjalkebgj lkrewqaertyuiopnvj alkebgjlkrewqaertyu iopnvjalkebgj
-            lkrewqae rtyuiopnvjalkebgjlkr ewqaertyuiopnvjalkebgjlk rewqaertyuiopnvjalkebg jlkrewqaertyuiopnvja lkebgjlkrewqaertyuiopnvj 
-            alkebgjlkrewqaertyuiop nvjalkebgjlkre. 
-            To be able to book you have to <a href="authentication/login">Log in</a> or <a href="authentication/register">Register</a>
-        </p>
-     </div>
-</div>
-
-
-@*@if (Events != null)
-{
-    @foreach(var eventModel in Events)
-    {
-        <h1>@eventModel.Name</h1>
-        <picture>
-            <source srcSet="@eventModel.ImageUrl" type="image/avif" />
-            <img decoding="async" loading="lazy"/>
-        </picture>
-        <img src="@eventModel.ImageUrl" />
-    }
-}*@
-
-
-<div class="card" style="width: 1000px;">
-    <div class="card-body">
-        <h3 class="card-title">Ticket Hive</h3>
-        
-        <p class="card-text">Welcome to Ticket Hive. The best site to find tickets to your favourte events.</p>
-
+        <div class="card-body text-center">
+            <p>
+                The best place in the world to get awesome tickets
+                to your favorite artists end events! 
+                Lorem ipsum dolor sit amet consectetur,
+                adipisicing elit. Accusantium qui possimus
+                quod quas laborum natus quia beatae, placeat
+                sunt alias, molestiae aliquam eum atque.
+                Assumenda tenetur aliquam dignissimos beatae
+                mollitia libero. Vero a necessitatibus tenetur
+                sapiente rerum odio, harum aliquid vel.
+                Have a great day shopping!
+            </p>
+        </div>
     </div>
 </div>
 
-@code{
-    private List<EventModel>? Events;
-    public List<string> Claims { get; set; } = new();
 
-    protected override async Task OnInitializedAsync()
-    {
-        var authState = await authStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        if (user.Identity!.IsAuthenticated)
-        {
-            Events = await service.GetEventsAsync();
-        }
-    }
+@code{
 }
