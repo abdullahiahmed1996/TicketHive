@@ -2,11 +2,13 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    background-color: #E0F2FF;
 }
 
 /* change background for pages here */
 main {
     flex: 1;
+    background-color: #E0F2FF;
 }
 
 /* change background here for sidebar */
@@ -14,20 +16,22 @@ main {
     background-image: linear-gradient(180deg, #305076 0%, rgb(251, 232, 156) 70%);
 }
 
+
 /* and top row bar color here */
 .top-row {
-    background-color: #f7f7f7;
+    background-color: #305076;
     border-bottom: 1px solid #d6d5d5;
     justify-content: flex-end;
-    height: 3.5rem;
+    height: 5rem;
     display: flex;
     align-items: center;
 }
 
     .top-row ::deep a, .top-row ::deep .btn-link {
         white-space: nowrap;
-        margin-left: 1.5rem;
+        margin-left: 2.5rem;
         text-decoration: none;
+        color: rgb(251, 232, 156);
     }
 
     .top-row ::deep a:hover, .top-row ::deep .btn-link:hover {
@@ -56,6 +60,7 @@ main {
 @media (min-width: 641px) {
     .page {
         flex-direction: row;
+       
     }
 
     .sidebar {
@@ -69,6 +74,10 @@ main {
         position: sticky;
         top: 0;
         z-index: 1;
+        /*justify-content: flex-start;*/
+    }
+    .top-row.auth {
+        justify-content: flex-start;
     }
 
     .top-row.auth ::deep a:first-child {
@@ -79,6 +88,20 @@ main {
 
     .top-row, article {
         padding-left: 2rem !important;
-        padding-right: 1.5rem !important;
+        padding-right: 2.5rem !important;
     }
+
+    #start {
+        justify-content: center!important;
+    }
+
+    #center {
+        justify-content: center!important;
+    }
+
+    .top-row.oi oi-home {
+        justify-content: flex-end !important;
+    }
+
+  
 }

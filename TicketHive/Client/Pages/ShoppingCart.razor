@@ -1,71 +1,78 @@
-﻿@page "/shopping-cart"
-@inject IAppService service
+﻿
+@page "/shopping-cart"
+@inject IAppService services
 @attribute [Authorize]
+@inject AuthenticationStateProvider authStateProvider
+@inject ICartService cartService
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
-<h1>Shopping Cart</h1>
-<br />
-<div class="container">
-    <div class="row">
-        <div class="col-md-8">
-            <table class="table">
-                <thead>
+<h1>Shopping cart</h1>
+
+@if (shoppingCart != null)
+{
+    if (shoppingCart.Count > 0)
+    {
+
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Event</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in shoppingCart)
+                {
                     <tr>
-                        <th>Event</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                        <th>Total</th>
-                        <th></th>
+                        <td>
+                            <h4>@item.Event.Name</h4>
+                            
+                        </td>
+                        <td>@item.Event.Price</td>
+                        <td>
+                            <button class="btn btn-primary" @onclick="(() => cartService.DecreaceQuantity(item))">-</button>
+                            @item.Quantity
+                            <button class="btn btn-primary" @onclick="(() => cartService.IncreaceQuantity(item))">+</button>
+                        </td>
+                        <td>@(item.Event.Price * item.Quantity)</td>
                     </tr>
-                </thead>
-                <tbody>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" style="text-align: right"><strong>Order Total:</strong></td>
+                    <td>@shoppingCart.Sum(item => item.Event.Price * item.Quantity)</td>
+                </tr>
+       
+            </tfoot>
+        </table>
 
-                    @if(eventsList != null)
-                    {
-                        @foreach(var e in eventsList)
-                        {
-                            <tr>
-                                <td>@e.Name</td>
-                                <td>@e.Price.ToString()</td>
-                                <td><input type="number" min="0" value="0"/></td>
-                                <td>@(e.Price * e.Capacity)</td>
-                                <td><button class="btn btn-danger">Remove</button></td>
-                            </tr>
-                        }
-                    }
-                </tbody>
-            </table>
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Order Summary</h5>
-                    <hr />
-                    <p>Subtotal: </p>
-                    <hr />
-                    <h4>Total:</h4>
-                    <button class="btn btn-success btn-lg btn-block">Checkout</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+    }
+    else
+    {
+        <p>You have emptied your cart.</p>
+    }
+}
+else
+{
+    <p>Add some events!</p>
+}
+
 
 @code
 {
-    private List<EventModel>? eventsList;
+    private List<CartItemsModel>? shoppingCart;
 
-
-
-
+    private string signedInUser;
     protected override async Task OnInitializedAsync()
     {
-        await GetEvents();
+        var authState = await authStateProvider.GetAuthenticationStateAsync();
+        signedInUser = authState.User.Identity.Name;
 
 
-   }
-    private async Task GetEvents()
-    {
-        eventsList = await service.GetEventsAsync();
+        shoppingCart = cartService.GetShoppingCartItem();
     }
-
 }

@@ -167,7 +167,7 @@ namespace TicketHive.Server.Migrations.EventsDb
                             Date = new DateTime(2023, 4, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ImageUrl = "/images/event/img8.jpg",
                             IsSoldOut = false,
-                            Name = "Flashback Forever Live Pod",
+                            Name = "Flashback Forever Live",
                             Price = 200,
                             Type = 3,
                             Venue = "Globen"
