@@ -73,7 +73,11 @@ namespace TicketHive.Server.Areas.Identity.Pages.Account
 					}
 				}
 			}
-			return Page();
+            foreach (var type in Enum.GetNames(typeof(CountryEnum)))
+            {
+                Countries.Add(type);
+            }
+            return Page();
 		}
 	}
 }
