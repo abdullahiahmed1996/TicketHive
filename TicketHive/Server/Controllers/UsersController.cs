@@ -9,10 +9,12 @@ namespace TicketHive.Server.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserRepo repo;
+
         public UsersController(IUserRepo repo)
         {
             this.repo = repo;
         }
+
         [HttpGet]
         public async Task<ActionResult<List<UserModel>?>> GetUsersAsync()
         {
@@ -21,11 +23,13 @@ namespace TicketHive.Server.Controllers
             {
                 return Ok(result);
             }
+
             else
             {
                 return BadRequest();
             }
         }
+
         [HttpGet("{UserName}")]
         public async Task<ActionResult<UserModel?>> GetUserByUsernameAsync(string UserName)
         {
@@ -34,11 +38,13 @@ namespace TicketHive.Server.Controllers
             {
                 return Ok(result);
             }
+
             else
             {
                 return NotFound();
             }
         }
+
         [HttpPost]
         public async Task<IActionResult> PostUserAsync([FromBody] UserModel model)
         {
@@ -47,19 +53,22 @@ namespace TicketHive.Server.Controllers
             {
                 return Ok();
             }
+
             else
             {
                 return BadRequest();
             }
         }
+
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUserAsync(int id, [FromBody] UserModel model)
+        public async Task<ActionResult<string?>> PutUserAsync(int id, [FromBody] UserModel model)
         {
             var result = await repo.PutUserAsync(id, model);
             if (result)
             {
-                return Ok();
+                return Ok("Event(s) added!");
             }
+
             else
             {
                 return BadRequest();
