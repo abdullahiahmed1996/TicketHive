@@ -2,8 +2,8 @@
 @inject IAppService service
 @inject ICartService cartService
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
-@inject AuthenticationStateProvider authStateProvider;
-@inject NavigationManager navManager;
+@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navManager
 @attribute [Authorize]
 
 <AuthorizeView Roles="Admin">

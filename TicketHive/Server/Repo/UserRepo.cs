@@ -36,7 +36,7 @@ namespace TicketHive.Server.Repo
         }
         public async Task<bool> PutUserAsync(int id, UserModel model)
         {
-            UserModel? userToUpdate = await context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            UserModel? userToUpdate = await context.Users.Include(u => u.UserEvents).FirstOrDefaultAsync(u => u.Id == id);
             if (userToUpdate != null)
             {
                 foreach (var e in model.UserEvents)
