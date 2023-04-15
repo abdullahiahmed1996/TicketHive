@@ -3,7 +3,10 @@ using TicketHive.Shared.Models;
 
 namespace TicketHive.Client.Services
 {
-	public class CartService : ICartService
+    /// <summary>
+    /// A service for managing a shopping cart.
+    /// </summary>
+    public class CartService : ICartService
 	{
 		private readonly ILocalStorageService localStorage;
 		private List<CartItemsModel>? shoppingCart;
@@ -12,7 +15,10 @@ namespace TicketHive.Client.Services
 			this.localStorage = localStorage;
 		}
 
-		public async Task<List<CartItemsModel>> GetShoppingCartAsync(string userName)
+        /// <summary>
+        /// Retrieves the shopping cart for the specified user.
+        /// </summary>
+        public async Task<List<CartItemsModel>> GetShoppingCartAsync(string userName)
 		{
 			shoppingCart = await localStorage.GetItemAsync<List<CartItemsModel>>(userName);
 
@@ -22,8 +28,10 @@ namespace TicketHive.Client.Services
 			}
 			return shoppingCart;
 		}
-
-		public async Task AddToCartAsync(string userName, EventModel addEvent)
+        /// <summary>
+        /// Adds an event to the shopping cart for the specified user.
+        /// </summary>
+        public async Task AddToCartAsync(string userName, EventModel addEvent)
 		{
 			shoppingCart = await localStorage.GetItemAsync<List<CartItemsModel>>(userName);
 
@@ -51,8 +59,10 @@ namespace TicketHive.Client.Services
 
 			await localStorage.SetItemAsync<List<CartItemsModel>>(userName, shoppingCart);
 		}
-
-		public async Task IncreaceQuantity(string userName, CartItemsModel item)
+        /// <summary>
+        /// Increases the quantity of an item in the shopping cart for the specified user.
+        /// </summary>
+        public async Task IncreaceQuantity(string userName, CartItemsModel item)
 		{
 			shoppingCart = await localStorage.GetItemAsync<List<CartItemsModel>>(userName);
 			CartItemsModel? itemToUpdate = shoppingCart.FirstOrDefault(i => i.EventId == item.EventId);
@@ -64,8 +74,10 @@ namespace TicketHive.Client.Services
 			}
 
 		}
-
-		public async Task DecreaceQuantity(string userName, CartItemsModel item)
+        /// <summary>
+        /// Decreases the quantity of an item in the shopping cart for the specified user.
+        /// </summary>
+        public async Task DecreaceQuantity(string userName, CartItemsModel item)
 		{
 			shoppingCart = await localStorage.GetItemAsync<List<CartItemsModel>>(userName);
 			CartItemsModel? itemToUpdate = shoppingCart.FirstOrDefault(i => i.EventId == item.EventId);
@@ -83,8 +95,10 @@ namespace TicketHive.Client.Services
 				}
 			}
 		}
-
-		public async Task RemoveFromCartAsync(string userName, CartItemsModel removeEvent)
+        /// <summary>
+        /// Remove an item in the shopping cart for the specified user.
+        /// </summary>
+        public async Task RemoveFromCartAsync(string userName, CartItemsModel removeEvent)
 		{
 			shoppingCart = await localStorage.GetItemAsync<List<CartItemsModel>>(userName);
 			CartItemsModel? itemToRemove = shoppingCart.FirstOrDefault(i => i.EventId == removeEvent.EventId);
