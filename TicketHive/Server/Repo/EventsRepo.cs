@@ -7,6 +7,7 @@ namespace TicketHive.Server.Repo
 	public class EventsRepo : IEventsRepo
 	{
 		private readonly EventsDbContext context;
+
 		private List<string> images = new()
 		{
 			"/images/event/img1.jpg",
@@ -29,26 +30,30 @@ namespace TicketHive.Server.Repo
 		public async Task<List<EventModel>?> GetEventsAsync()
 		{
 			return await context.Events.Include(e => e.EventUsers).ToListAsync();
+
+			/*.Include(e => e.EventUsers)*/
 		}
 
 		public async Task<EventModel?> GetEventByIdAsync(int id)
 		{
 			return await context.Events.Include(e => e.EventUsers).FirstOrDefaultAsync(e => e.Id == id);
+			// Include(e => e.EventUsers).
 		}
 
 		public async Task<bool> PostEventAsync(EventModel model)
 		{
 			try
 			{
-				if(model.ImageUrl == null)
+				if (model.ImageUrl == null)
 				{
-                    model.ImageUrl = SetImageUrl();
-                }
+					model.ImageUrl = SetImageUrl();
+				}
 
 				await context.Events.AddAsync(model);
 				await context.SaveChangesAsync();
 				return true;
 			}
+
 			catch
 			{
 				return false;
@@ -58,6 +63,7 @@ namespace TicketHive.Server.Repo
 		public async Task<bool> PutEventAsync(int id, EventModel model)
 		{
 			EventModel? modelToUpdate = await context.Events.FirstOrDefaultAsync(e => e.Id == id);
+
 			if (modelToUpdate != null)
 			{
 				modelToUpdate.Name = model.Name;
@@ -71,6 +77,7 @@ namespace TicketHive.Server.Repo
 				await context.SaveChangesAsync();
 				return true;
 			}
+
 			else
 			{
 				return false;
@@ -80,12 +87,14 @@ namespace TicketHive.Server.Repo
 		public async Task<bool> DeleteEventAsync(int id)
 		{
 			EventModel? modelToDelete = await context.Events.FirstOrDefaultAsync(e => e.Id == id);
+
 			if (modelToDelete != null)
 			{
 				context.Events.Remove(modelToDelete);
 				await context.SaveChangesAsync();
 				return true;
 			}
+
 			else
 			{
 				return false;

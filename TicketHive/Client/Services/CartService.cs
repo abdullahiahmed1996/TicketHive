@@ -1,7 +1,4 @@
-﻿using Blazored.LocalStorage;
-using TicketHive.Shared.Models;
-
-namespace TicketHive.Client.Services
+﻿namespace TicketHive.Client.Services
 {
     /// <summary>
     /// A service for managing a shopping cart.
@@ -111,3 +108,4 @@ namespace TicketHive.Client.Services
 	}
 }
 
+>>>>>>> master
