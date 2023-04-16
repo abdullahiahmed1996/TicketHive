@@ -34,7 +34,7 @@
                                 <td>
                                     <div class="quantity-container">
                                         <button class="btn-quantity btn-quantity-hover-minus" @onclick="async () => await DecreaceQuantity(c)">-</button>
-                                        <input type="text" value="@c.Quantity" readonly>
+                                        <input type="text" @bind-value="@c.Quantity" readonly>
                                         <button class="btn-quantity btn-quantity-hover-plus" @onclick="async () => await IncreaceQuantity(c)">+</button>
                                     </div>
                                 </td>
@@ -75,6 +75,7 @@
     private AuthenticationState? authState;
     private string signedInUser;
     private UserModel? _User;
+    private int Quantity;
 
     protected override async Task OnInitializedAsync()
     {
@@ -86,9 +87,7 @@
 
     private async Task Checkout()
     {
-        // put this in service/controller/repo?
-        // also update event property TicketsSold ( Event.TicketsSold += item.Quantity; )
-
+        // put this in service/controller/repo?        
         // Gets the user, adds events to EventList, makes Put request
         _User = await service.GetUserByUsernameAsync(signedInUser);
         if (shoppingCart != null && _User != null)
@@ -99,27 +98,47 @@
                 {
                     _User.UserEvents!.Add(item.Event);
                 }
+                item.Event.TicketsSold = item.Quantity;
+                await service.PutEventAsync(item.EventId, item.Event);
             }
             await service.PutUserAsync(_User.Id, _User);            
             navigation.NavigateTo("/confirmation");
         }
     }
 
+    /// <summary>
+    /// Decreases the quantity of an item in the shopping cart.
+    /// </summary>
     private async Task DecreaceQuantity(CartItemsModel item)
     {
         await cartService.DecreaceQuantity(signedInUser, item);
         shoppingCart = await cartService.GetShoppingCartAsync(signedInUser);
     }
-
+    /// <summary>
+    /// Increace the quantity of an item in the shopping cart.
+    /// </summary>
     private async Task IncreaceQuantity(CartItemsModel item)
     {
-        await cartService.IncreaceQuantity(signedInUser, item);
-        shoppingCart = await cartService.GetShoppingCartAsync(signedInUser);
+        if ((item.Event.Capacity - item.Event.TicketsSold) > item.Quantity)
+        {
+            await cartService.IncreaceQuantity(signedInUser, item);
+            shoppingCart = await cartService.GetShoppingCartAsync(signedInUser);
+        }
+        
     }
-
+    /// <summary>
+    /// remove event from shoppicart
+    /// </summary>
     private async Task RemoveItem(CartItemsModel item)
     {
         await cartService.RemoveFromCartAsync(signedInUser, item);
         shoppingCart = await cartService.GetShoppingCartAsync(signedInUser);
     }
+
+    //"Quantity" value=
+
 }
+
+
+
+    
