@@ -1,4 +1,5 @@
 @page "/shopping-cart"
+@using TicketHive.Client.Managers;
 @inject IAppService service
 @attribute [Authorize]
 @inject AuthenticationStateProvider authStateProvider
@@ -19,8 +20,8 @@
                         <th>Event</th>
                         <th>Price</th>
                         <th>Quantity</th>
-                        @*<th>Total</th>*@
-                        <th></th>
+                        <th>Total</th>
+                        
                     </tr>
                 </thead>
                 <tbody>
@@ -30,7 +31,7 @@
                         {
                             <tr>
                                 <td>@c.Event.Name</td>
-                                <td>@c.Event.Price.ToString()</td>
+                                <td>@Math.Round((c.Price*userRate), 2) @CurrencyManager.Currency</td>
                                 <td>
                                     <div class="quantity-container">
                                         <button class="btn-quantity btn-quantity-hover-minus" @onclick="async () => await DecreaceQuantity(c)">-</button>
@@ -38,7 +39,7 @@
                                         <button class="btn-quantity btn-quantity-hover-plus" @onclick="async () => await IncreaceQuantity(c)">+</button>
                                     </div>
                                 </td>
-                                 @*<td>@c.Event.Price * @c.Quantity</td>*@
+                                <td>@(c.Event.Price * c.Quantity)</td>
                                 <td><button class="btn btn-danger" @onclick="async () => await RemoveItem(c)">Remove</button></td>
                             </tr>
                         }
@@ -59,9 +60,13 @@
                     <hr />
                     @if (shoppingCart != null)
                     {
-                        <h4>Subtotal: @shoppingCart.Sum(c => c.Event.Price * c.Quantity)</h4>
+                        <h4>Subtotal: @Math.Round(@shoppingCart.Sum(c => c.Event.Price * c.Quantity*userRate), 2) @CurrencyManager.Currency </h4>
                     }                    
                     <button class="btn btn-success btn-lg btn-block" @onclick="(() => Checkout())">Checkout</button>
+                    @if (errorMsg != null)
+                    {
+                        <p class="mt-2 text-danger">@errorMsg</p>
+                    }
                 </div>
             </div>
         </div>
@@ -75,35 +80,58 @@
     private AuthenticationState? authState;
     private string signedInUser;
     private UserModel? _User;
+    private string? errorMsg;
+    private bool isValidated = true;
     private int Quantity;
+    private string? userCountry { get; set; }
+    private decimal userRate { get; set; }
+
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await authStateProvider.GetAuthenticationStateAsync();
         signedInUser = authState.User.Identity.Name;
 
+        if (authState.User!.Identity.IsAuthenticated)
+        {
+            userCountry = await service.GetUserCountryByUsernameAsync(authState.User.Identity.Name!);
+
+            if (userCountry != null)
+            {
+                userRate = await CurrencyManager.GetRate(userCountry);
+            }
+        }
+
         shoppingCart = await cartService.GetShoppingCartAsync(signedInUser);
     }
 
     private async Task Checkout()
     {
-        // put this in service/controller/repo?        
-        // Gets the user, adds events to EventList, makes Put request
+        // Gets the user, adds events to EventList, makes Put request        
         _User = await service.GetUserByUsernameAsync(signedInUser);
         if (shoppingCart != null && _User != null)
-        {         
+        {
             foreach (var item in shoppingCart)
             {
-                for (int i = 0; i < item.Quantity; i++)
+                int remainingTickets = item.Event.Capacity - item.Event.TicketsSold;
+                if (remainingTickets < item.Quantity)
                 {
-                    _User.UserEvents!.Add(item.Event);
+                    errorMsg = $"Sorry, only {remainingTickets} tickets left for {item.Event.Name}";
+                    return;
                 }
-                item.Event.TicketsSold = item.Quantity;
-                await service.PutEventAsync(item.EventId, item.Event);
+                if (isValidated)
+                {
+                    for (int i = 0; i < item.Quantity; i++)
+                    {
+                        _User.UserEvents!.Add(item.Event);
+                    }
+                    item.Event.TicketsSold = item.Quantity;
+                    await service.PutEventAsync(item.EventId, item.Event);
+                }
             }
-            await service.PutUserAsync(_User.Id, _User);            
+            await service.PutUserAsync(_User.Id, _User);
             navigation.NavigateTo("/confirmation");
-        }
+        }  
     }
 
     /// <summary>
@@ -114,18 +142,16 @@
         await cartService.DecreaceQuantity(signedInUser, item);
         shoppingCart = await cartService.GetShoppingCartAsync(signedInUser);
     }
+
     /// <summary>
     /// Increace the quantity of an item in the shopping cart.
     /// </summary>
     private async Task IncreaceQuantity(CartItemsModel item)
     {
-        if ((item.Event.Capacity - item.Event.TicketsSold) > item.Quantity)
-        {
             await cartService.IncreaceQuantity(signedInUser, item);
-            shoppingCart = await cartService.GetShoppingCartAsync(signedInUser);
-        }
-        
+            shoppingCart = await cartService.GetShoppingCartAsync(signedInUser);        
     }
+
     /// <summary>
     /// remove event from shoppicart
     /// </summary>
@@ -134,9 +160,6 @@
         await cartService.RemoveFromCartAsync(signedInUser, item);
         shoppingCart = await cartService.GetShoppingCartAsync(signedInUser);
     }
-
-    //"Quantity" value=
-
 }
 
 
