@@ -3,18 +3,6 @@ using TicketHive.Shared.Models;
 
 namespace TicketHive.Client.Services
 {
-<<<<<<< HEAD
-    public class CartService : ICartService
-    {
-        private readonly ILocalStorageService localStorage;
-        private List<CartItemsModel>? shoppingCart;
-
-        public CartService(ILocalStorageService localStorage)
-        {
-            this.localStorage = localStorage;
-            shoppingCart = new List<CartItemsModel>();//
-        }
-=======
 	public class CartService : ICartService
 	{
 		private readonly ILocalStorageService localStorage;
@@ -27,7 +15,6 @@ namespace TicketHive.Client.Services
 		public async Task<List<CartItemsModel>> GetShoppingCartAsync(string userName)
 		{
 			shoppingCart = await localStorage.GetItemAsync<List<CartItemsModel>>(userName);
->>>>>>> master
 
 			if (shoppingCart == null)
 			{
@@ -45,31 +32,12 @@ namespace TicketHive.Client.Services
 				shoppingCart = new();
 			}
 
-<<<<<<< HEAD
-        public async Task AddToCartAsync(string userName, EventModel addEvent)
-        {
-			List<CartItemsModel> shoppingCart = await localStorage.GetItemAsync<List<CartItemsModel>>(userName);
-
-            if(shoppingCart == null)
-            {
-                shoppingCart = new();
-            }
-
-            if(shoppingCart.Any(i  => i.Event.Id == addEvent.Id))
-            {
-                shoppingCart.First(i => i.Event.Id == addEvent.Id).Quantity++;
-            }
-
-            else
-            {
-=======
 			if (shoppingCart.Any(i => i.Event.Id == addEvent.Id))
 			{
 				shoppingCart.First(i => i.Event.Id == addEvent.Id).Quantity++;
 			}
 			else
 			{
->>>>>>> master
 				CartItemsModel newCartItem = new()
 				{
 					EventId = addEvent.Id,
@@ -95,32 +63,6 @@ namespace TicketHive.Client.Services
 				await localStorage.SetItemAsync<List<CartItemsModel>>(userName, shoppingCart);
 			}
 
-<<<<<<< HEAD
-        public async Task DecreaceQuantity(CartItemsModel item)
-        {
-            if (item.Quantity > 1)
-            {
-                item.Quantity--;
-                await localStorage.SetItemAsync<List<CartItemsModel>>("shoppingCartCookies", shoppingCart);
-            }
-
-            else if(item.Quantity == 1)
-            {
-                await RemoveFromCartAsync(item);
-            }
-        }
-        public async Task RemoveFromCartAsync(CartItemsModel removeEvent)
-        {
-            shoppingCart.Remove(removeEvent);
-            await localStorage.SetItemAsync<List<CartItemsModel>>("shoppingCartCookies", shoppingCart);
-
-            //shoppingCart = await localStorage.GetItemAsync<List<CartItemsModel>>("shoppingCartCookies");
-            //shoppingCart.Remove(removeEvent);
-            //await localStorage.SetItemAsync<List<CartItemsModel>>("shoppingCartCookies", shoppingCart);
-        }
-    }
-}
-=======
 		}
 
 		public async Task DecreaceQuantity(string userName, CartItemsModel item)
@@ -152,7 +94,13 @@ namespace TicketHive.Client.Services
 				await localStorage.SetItemAsync<List<CartItemsModel>>(userName, shoppingCart);
 			}
 		}
+
+		public async Task EmptyShoppingCartAsync(string UserName)
+		{
+			shoppingCart = await GetShoppingCartAsync(UserName);
+			shoppingCart.Clear();
+			await localStorage.SetItemAsync<List<CartItemsModel>>(UserName, shoppingCart);
+		}
 	}
 }
 
->>>>>>> master
